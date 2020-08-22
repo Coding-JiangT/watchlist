@@ -1,0 +1,13 @@
+*.pyc
+*~
+__pycache__
+.DS_Store
+.env
+*.db
+htmlcov/
+.coverage
+.vscode
+# 忽略虚拟环境文件夹venv
+venv 
+# 忽略虚拟环境文件夹env 
+env  

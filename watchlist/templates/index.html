@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<p>{{ movies|length }} Titles</p>
+{% if current_user.is_authenticated %}  {# 如果用户已登录才可以显示出创建新条目的输入框和按钮 #}
+    <form method="post">  {# 创建新条目表单，method指定http请求方法为POST#}
+        Name <input type="text" name="title" autocomplete="off" required>  {# required属性实现客户端验证 #}
+        Year <input type="text" name="year" autocomplete="off" required>
+        <input class="btn" type="submit" name="submit" value="Add">
+    </form>
+{% endif %}
+<ul class="movie-list">
+    {% for movie in movies %}
+    <li>{{ movie.title }} - {{ movie.year }}
+        <span class="float-right">
+            {% if current_user.is_authenticated %}  {# 如果用户已登录才可以显示出编辑、删除按钮 #}
+                <a class="btn" href="{{ url_for('edit', movie_id=movie.id) }}">Edit</a>
+                <form class="inline-form" method="post" action="{{ url_for('delete', movie_id=movie.id) }}">
+                    <input class="btn" type="submit" name="delete" value="Delete" onclick="return confirm('Are you sure?')">
+                </form>
+            {% endif %}
+            <a class="douban" href="https://movie.douban.com/subject_search?search_text={{ movie.title }}" target="_blank" title="Find this movie on Douban Movie">Douban</a>
+        </span>
+    </li>
+    {% endfor %}
+</ul>
+<img alt="Walking Totoro" class="totoro" src="{{ url_for('static', filename='images/totoro.gif') }}" title="to~to~ro~">
+{% endblock %}
