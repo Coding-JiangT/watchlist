@@ -3,7 +3,7 @@ from flask import request, url_for, redirect, flash, render_template
 from flask_login import login_user, login_required, logout_user, current_user
 
 from watchlist import app, db
-from watchlist.models import Movie, User
+from watchlist.models import Movie, User, Message
 
 # 主页 viewfunciont
 @app.route('/', methods = ['GET', 'POST'])
@@ -28,6 +28,24 @@ def index():
 
     movies = Movie.query.all()  # 读取所有电影记录
     return render_template('index.html', movies = movies)
+
+@app.route('/message', methods = ['GET', 'POST'])
+def message():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        content = request.form.get('content')
+        if not name or not content or len(name)>20 or len(content)>200:
+            flash('Invalid input.')
+            return redirect(url_for('message'))
+    
+        message = Message(name = name, content = content)
+        db.session.add(message)
+        db.session.commit()
+        flash('Message created.')
+        return redirect(url_for('message'))
+
+    messages = Message.query.all()
+    return render_template('message.html', messages = messages)
 
 # 用户登录
 @app.route('/login', methods = ['GET', 'POST'])

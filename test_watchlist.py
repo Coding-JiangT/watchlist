@@ -1,6 +1,6 @@
 import unittest
 from watchlist import app, db
-from watchlist.models import User, Movie
+from watchlist.models import User, Movie, Message
 from watchlist.commands import forge, initdb
 
 class SayHelloTestCase(unittest.TestCase):
@@ -17,8 +17,9 @@ class SayHelloTestCase(unittest.TestCase):
         user = User(name = 'Test', username = 'test')
         user.set_password('123')
         movie = Movie(title = 'Test Movie Title', year = '2020')
+        message = Message(name = u'小江', content = u'电影真好看啊！')
         # 一次性添加多个模型类实例
-        db.session.add_all([user, movie])
+        db.session.add_all([user, movie, message])
         db.session.commit()
 
         self.client = app.test_client()  # 创建测试客户端（浏览器），模拟客户端请求
@@ -241,6 +242,52 @@ class SayHelloTestCase(unittest.TestCase):
         data = response.get_data(as_text = True)
         self.assertIn('Invalid input.', data)
         self.assertNotIn('Settings updated.', data)
+
+    # 测试留言板功能
+    def test_message(self):
+        # 测试留言板页面
+        response = self.client.get('/message', follow_redirects = True)
+        data = response.get_data(as_text = True)
+        self.assertIn('Message', data)
+        self.assertIn('Your name', data)
+        self.assertIn(u'小江', data)
+        self.assertIn(u'电影真好看啊', data)
+
+        # 测试添加正确有效的留言
+        response = self.client.post('/message',
+            data = dict(
+                name = 'Small T',
+                content = 'I don\'t like pubs http://sarigalin.org/order-finasteride-uk/ proscar discounts We believe these new regulations will do the same and we will be rigorously enforcing them," she said.'
+            ),
+            follow_redirects = True
+        )
+        data = response.get_data(as_text = True)
+        self.assertIn('Message created.', data)
+        self.assertNotIn('Invalid input.', data)
+
+        # 测试添加name为空的留言
+        respose = self.client.post('/message',
+            data = dict(
+                name = '',
+                content = 'I don\'t like pubs http://sarigalin.org/order-finasteride-uk/ proscar discounts We believe these new regulations will do the same and we will be rigorously enforcing them," she said.'
+            ),
+            follow_redirects = True
+        )
+        data = respose.get_data(as_text = True)
+        self.assertIn('Invalid input.', data)
+        self.assertNotIn('Message created.', data)
+
+        # 测试添加content为空的留言
+        respose = self.client.post('/message',
+            data = dict(
+                name = 'Small T',
+                content = ''
+            ),
+            follow_redirects = True
+        )
+        data = respose.get_data(as_text = True)
+        self.assertIn('Invalid input.', data)
+        self.assertNotIn('Message created.', data)
 
     # 测试自定义命令
     # 之前我们已经创建了一个命令运行器对象runner，对它调用 invoke() 方法可以执行命令，传入命令函数对象，或是使用 args 关键字直接给出命令参数列表。

@@ -21,6 +21,7 @@
     <nav>
         <ul>
             <li><a href="{{ url_for('index') }}">Home</a></li>
+            <li><a href="{{ url_for('message') }}">Message</a></li>
             {% if current_user.is_authenticated %}  {# 对于登录用户 #}
                 <li><a href="{{ url_for('settings') }}">Settings</a></li>
                 <li><a href="{{ url_for('logout') }}">Logout</a></li>

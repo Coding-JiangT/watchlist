@@ -20,4 +20,10 @@ class Movie(db.Model):  # 表名movie
     id = db.Column(db.Integer, primary_key = True)  
     title = db.Column(db.String(60))  
     year = db.Column(db.String(4))  
+
+class Message(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String(20))
+    content = db.Column(db.String(200))  # 留言内容
+
     

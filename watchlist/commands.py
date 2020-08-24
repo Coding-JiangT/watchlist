@@ -2,7 +2,7 @@
 import click
 
 from watchlist import app, db
-from watchlist.models import User, Movie
+from watchlist.models import User, Movie, Message
 # 使用@click.command()装饰函数，使其成为命令行接口
 # 使用@click.option()等装饰函数，为其添加命令行选项
 # flask.cli是Flask内置的脚本命令接口，基于click实现的
@@ -41,12 +41,21 @@ def forge():
         {'title': 'WALL-E', 'year': '2008'},
         {'title': 'The Pork of Music', 'year': '2012'},
     ]
-
+    messages = [
+        {'name': u'小江', 'content': u'电影真好看啊！'},
+        {'name': 'Small T', 'content': 'I don\'t like pubs http://sarigalin.org/order-finasteride-uk/ proscar discounts We believe these new regulations will do the same and we will be rigorously enforcing them," she said.'},
+        {'name': 'GlavinfUt', 'content': 'c82831 viagra in taiwan http://viagraoier.com/ try it cheapest viagra price https://viagraonline20up.com/ viagra female price in india https://viagraonlinegfsd.com/'},
+        {'name': 'NatashafUt', 'content': 'cc0031 cialis 10 mg generic http://cialisyytr.com/ costo cialis in romania http://ciaviagogogo.com/ que son las pastillas cialis http://cilapharm.com/'},
+        {'name': 'Brooks', 'content': 'I\'ll call back later http://kbtlund.se/benadryl-cough-syrup-ingredients-india albuterol and benadryl Lancashire Evening Post provides news, events and sport features from the Preston area'},
+    ]
     # user = User(name = name)
     # db.session.add(user)
     for m in movies:
         movie = Movie(title = m['title'], year = m['year'])
         db.session.add(movie)
+    for m in messages:
+        message = Message(name = m['name'], content = m['content'])
+        db.session.add(message)
     
     db.session.commit()
     click.echo('Done.')  # 命令行提示用户数据添加完成
